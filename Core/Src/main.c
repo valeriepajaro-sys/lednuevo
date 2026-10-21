@@ -74,10 +74,10 @@ static void MX_USART1_UART_Init(void);
 /* USER CODE BEGIN 0 */
 void procesa_rx()
 {
-  if(strstr(UARTRX1.trama_rx,"led5on")){
+  if(strstr(UARTRX1.trama_rx,"led5=on*")){
     HAL_GPIO_WritePin(led5_GPIO_Port, led5_Pin, GPIO_PIN_SET);
   }
-  else if(strstr(UARTRX1.trama_rx,"led5off")){
+  else if(strstr(UARTRX1.trama_rx,"led5=off*")){
     HAL_GPIO_WritePin(led5_GPIO_Port, led5_Pin, GPIO_PIN_RESET);
   }
 }
@@ -345,10 +345,13 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, led4_Pin|led2_Pin|led3_Pin|led1_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, led5_Pin|led4_Pin|led2_Pin|led3_Pin
+                          |led1_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : led4_Pin led2_Pin led3_Pin led1_Pin */
-  GPIO_InitStruct.Pin = led4_Pin|led2_Pin|led3_Pin|led1_Pin;
+  /*Configure GPIO pins : led5_Pin led4_Pin led2_Pin led3_Pin
+                           led1_Pin */
+  GPIO_InitStruct.Pin = led5_Pin|led4_Pin|led2_Pin|led3_Pin
+                          |led1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
