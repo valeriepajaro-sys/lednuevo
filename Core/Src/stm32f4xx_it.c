@@ -31,7 +31,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+uint8_t contador = 0;
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -57,6 +57,8 @@
 /* External variables --------------------------------------------------------*/
 extern TIM_HandleTypeDef htim1;
 extern TIM_HandleTypeDef htim2;
+extern DMA_HandleTypeDef hdma_usart1_rx;
+extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
 
 /* USER CODE END EV */
@@ -200,18 +202,44 @@ void SysTick_Handler(void)
 /******************************************************************************/
 
 /**
+  * @brief This function handles EXTI line1 interrupt.
+  */
+void EXTI1_IRQHandler(void)
+{
+  /* USER CODE BEGIN EXTI1_IRQn 0 */
+HAL_GPIO_TogglePin(led4_GPIO_Port, led4_Pin);
+  /* USER CODE END EXTI1_IRQn 0 */
+  HAL_GPIO_EXTI_IRQHandler(pull_Pin);
+  /* USER CODE BEGIN EXTI1_IRQn 1 */
+
+  /* USER CODE END EXTI1_IRQn 1 */
+}
+
+/**
   * @brief This function handles TIM1 update interrupt and TIM10 global interrupt.
   */
 void TIM1_UP_TIM10_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 0 */
 HAL_GPIO_TogglePin(led2_GPIO_Port, led2_Pin);
+
+contador++;
+if(contador >= 20){
+  contador = 0;
+  HAL_GPIO_TogglePin(led4_GPIO_Port, led4_Pin);
+  contador = 0;
+}
 //metodo1
+// Esta variable conserva su valor entre interrupciones del temporizador.
 /*static uint8_t ticks = 0;
-HAL_GPIO_TogglePin(led2_GPIO_Port, led2_Pin);       // 100 ms
+// Cambia el estado de LED2 en cada interrupción (cada 100 ms).
+HAL_GPIO_TogglePin(led2_GPIO_Port, led2_Pin);
+// Cuenta las interrupciones; al llegar a 10, ha transcurrido aproximadamente 1 s.
 if (++ticks >= 10) {
-    ticks = 0;
-    HAL_GPIO_TogglePin(led1_GPIO_Port, led1_Pin);  // 1 s
+  // Reinicia el contador para comenzar un nuevo intervalo de 1 s.
+  ticks = 0;
+  // Cambia el estado de LED1 una vez por cada 10 interrupciones.
+  HAL_GPIO_TogglePin(led1_GPIO_Port, led1_Pin);
 }*/
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 0 */
@@ -219,6 +247,20 @@ if (++ticks >= 10) {
   /* USER CODE BEGIN TIM1_UP_TIM10_IRQn 1 */
 
   /* USER CODE END TIM1_UP_TIM10_IRQn 1 */
+}
+
+/**
+  * @brief This function handles TIM1 capture compare interrupt.
+  */
+void TIM1_CC_IRQHandler(void)
+{
+  /* USER CODE BEGIN TIM1_CC_IRQn 0 */
+
+  /* USER CODE END TIM1_CC_IRQn 0 */
+  HAL_TIM_IRQHandler(&htim1);
+  /* USER CODE BEGIN TIM1_CC_IRQn 1 */
+
+  /* USER CODE END TIM1_CC_IRQn 1 */
 }
 
 /**
@@ -234,6 +276,34 @@ HAL_GPIO_TogglePin(led1_GPIO_Port, led1_Pin);
   /* USER CODE BEGIN TIM2_IRQn 1 */
 
   /* USER CODE END TIM2_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+
+  /* USER CODE END USART1_IRQn 0 */
+  HAL_UART_IRQHandler(&huart1);
+  /* USER CODE BEGIN USART1_IRQn 1 */
+
+  /* USER CODE END USART1_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2 stream2 global interrupt.
+  */
+void DMA2_Stream2_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2_Stream2_IRQn 0 */
+
+  /* USER CODE END DMA2_Stream2_IRQn 0 */
+  HAL_DMA_IRQHandler(&hdma_usart1_rx);
+  /* USER CODE BEGIN DMA2_Stream2_IRQn 1 */
+
+  /* USER CODE END DMA2_Stream2_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
